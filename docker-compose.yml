@@ -1,0 +1,176 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bookstore_db
+      POSTGRES_USER: bookstore_user
+      POSTGRES_PASSWORD: bookstore_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - bookstore-network
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+    depends_on:
+      - auth-service
+      - book-service
+      - cart-service
+      - catalog-service
+      - comment-rate-service
+      - customer-service
+      - manager-service
+      - order-service
+      - pay-service
+      - recommender-ai-service
+      - ship-service
+      - staff-service
+    networks:
+      - bookstore-network
+
+  auth-service:
+    build: ./auth-service
+    depends_on:
+      - postgres
+    ports:
+      - "8001:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  book-service:
+    build: ./book-service
+    depends_on:
+      - postgres
+    ports:
+      - "8002:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  cart-service:
+    build: ./cart-service
+    depends_on:
+      - postgres
+    ports:
+      - "8003:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  catalog-service:
+    build: ./catalog-service
+    depends_on:
+      - postgres
+    ports:
+      - "8004:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  comment-rate-service:
+    build: ./comment-rate-service
+    depends_on:
+      - postgres
+    ports:
+      - "8005:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  customer-service:
+    build: ./customer-service
+    depends_on:
+      - postgres
+    ports:
+      - "8006:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  manager-service:
+    build: ./manager-service
+    depends_on:
+      - postgres
+    ports:
+      - "8007:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  order-service:
+    build: ./order-service
+    depends_on:
+      - postgres
+    ports:
+      - "8008:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  pay-service:
+    build: ./pay-service
+    depends_on:
+      - postgres
+    ports:
+      - "8009:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  recommender-ai-service:
+    build: ./recommender-ai-service
+    depends_on:
+      - postgres
+    ports:
+      - "8010:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  ship-service:
+    build: ./ship-service
+    depends_on:
+      - postgres
+    ports:
+      - "8011:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+  staff-service:
+    build: ./staff-service
+    depends_on:
+      - postgres
+    ports:
+      - "8012:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - bookstore-network
+
+networks:
+  bookstore-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
