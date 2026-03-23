@@ -50,8 +50,11 @@ def register(request):
             is_active=True
         )
         
-        # Assign default role
-        role, _ = Role.objects.get_or_create(name='user')
+        # Assign default role (admin for first user)
+        if User.objects.count() == 0:  # First user gets admin role
+            role, _ = Role.objects.get_or_create(name='admin')
+        else:
+            role, _ = Role.objects.get_or_create(name='user')
         UserRole.objects.create(user=user, role=role)
         
         return Response({

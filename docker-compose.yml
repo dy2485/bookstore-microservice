@@ -13,6 +13,11 @@ services:
       - "5432:5432"
     networks:
       - bookstore-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bookstore_user -d bookstore_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api-gateway:
     build: ./api-gateway
@@ -39,7 +44,8 @@ services:
   auth-service:
     build: ./auth-service
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8001:8000"
     environment:
